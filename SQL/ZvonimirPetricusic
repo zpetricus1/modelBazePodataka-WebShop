@@ -1,0 +1,1018 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.3
+-- Dumped by pg_dump version 12.3
+
+-- Started on 2020-09-17 17:17:21
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2951 (class 1262 OID 16393)
+-- Name: webshop; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE webshop WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'Croatian_Croatia.1250' LC_CTYPE = 'Croatian_Croatia.1250';
+
+
+ALTER DATABASE webshop OWNER TO postgres;
+
+\connect webshop
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 230 (class 1255 OID 16966)
+-- Name: brojdostupnihvozila(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.brojdostupnihvozila() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+declare
+   brojac integer;
+begin
+   select count(*) 
+   into brojac
+   from proizvodi
+   where id_model=7;
+   
+   return brojac;
+end;
+$$;
+
+
+ALTER FUNCTION public.brojdostupnihvozila() OWNER TO postgres;
+
+--
+-- TOC entry 229 (class 1255 OID 16965)
+-- Name: minkilometri(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.minkilometri() RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+
+declare
+   brojac integer;
+begin
+   select proizvod_id 
+   into brojac
+   from proizvodi where kilometri =  ( SELECT MIN(kilometri) FROM proizvodi );
+   return brojac;
+end;
+$$;
+
+
+ALTER FUNCTION public.minkilometri() OWNER TO postgres;
+
+--
+-- TOC entry 228 (class 1255 OID 16661)
+-- Name: sviproizvodi(); Type: PROCEDURE; Schema: public; Owner: postgres
+--
+
+CREATE PROCEDURE public.sviproizvodi()
+    LANGUAGE sql
+    AS $$
+select * from proizvodi where proizvod_id=27;
+$$;
+
+
+ALTER PROCEDURE public.sviproizvodi() OWNER TO postgres;
+
+--
+-- TOC entry 243 (class 1255 OID 16660)
+-- Name: ukupna_cijena(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.ukupna_cijena(proizvod_ide integer) RETURNS numeric
+    LANGUAGE plpgsql
+    AS $$
+declare
+   brojac  numeric;
+begin
+
+
+ select cijena+(cijena*0.25) into brojac from proizvodi where proizvod_id=proizvod_ide;
+
+return brojac;
+end;
+$$;
+
+
+ALTER FUNCTION public.ukupna_cijena(proizvod_ide integer) OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 205 (class 1259 OID 16404)
+-- Name: naslovnaslika; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.naslovnaslika (
+    id integer NOT NULL,
+    nazivslike character(45)
+);
+
+
+ALTER TABLE public.naslovnaslika OWNER TO postgres;
+
+--
+-- TOC entry 2952 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: TABLE naslovnaslika; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.naslovnaslika IS 'Privremena tablica';
+
+
+--
+-- TOC entry 204 (class 1259 OID 16402)
+-- Name: Naslovna slika_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."Naslovna slika_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Naslovna slika_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2953 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: Naslovna slika_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."Naslovna slika_id_seq" OWNED BY public.naslovnaslika.id;
+
+
+--
+-- TOC entry 213 (class 1259 OID 16581)
+-- Name: akcija; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.akcija (
+    akcija_id integer NOT NULL,
+    iznos integer,
+    pocetak date,
+    kraj date
+);
+
+
+ALTER TABLE public.akcija OWNER TO postgres;
+
+--
+-- TOC entry 212 (class 1259 OID 16579)
+-- Name: akcija_akcija_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.akcija_akcija_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.akcija_akcija_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2954 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: akcija_akcija_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.akcija_akcija_id_seq OWNED BY public.akcija.akcija_id;
+
+
+--
+-- TOC entry 223 (class 1259 OID 16910)
+-- Name: dnevnik; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.dnevnik (
+    dnevnik_id integer NOT NULL,
+    id_radnja integer,
+    datumvrijeme time without time zone DEFAULT CURRENT_TIMESTAMP,
+    id_korisnik integer
+);
+
+
+ALTER TABLE public.dnevnik OWNER TO postgres;
+
+--
+-- TOC entry 222 (class 1259 OID 16908)
+-- Name: dnevnik_dnevnik_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.dnevnik_dnevnik_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.dnevnik_dnevnik_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2955 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: dnevnik_dnevnik_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.dnevnik_dnevnik_id_seq OWNED BY public.dnevnik.dnevnik_id;
+
+
+--
+-- TOC entry 211 (class 1259 OID 16546)
+-- Name: kategorija; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.kategorija (
+    kategorija_id integer NOT NULL,
+    naziv character(45)
+);
+
+
+ALTER TABLE public.kategorija OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 16544)
+-- Name: kategorija_kategorija_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.kategorija_kategorija_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.kategorija_kategorija_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2956 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: kategorija_kategorija_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.kategorija_kategorija_id_seq OWNED BY public.kategorija.kategorija_id;
+
+
+--
+-- TOC entry 203 (class 1259 OID 16396)
+-- Name: korisnik; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.korisnik (
+    korisnik_id integer NOT NULL,
+    ime character(45),
+    prezime character(45),
+    email character(45) NOT NULL,
+    telefon character(45),
+    korisnickoime character(45) NOT NULL,
+    lozinkasha1 character(45),
+    adresa character(45),
+    postanskibroj character(45),
+    mjesto character(45),
+    id_uloga integer DEFAULT 1 NOT NULL,
+    email_potvrda boolean,
+    blokiran boolean
+);
+
+
+ALTER TABLE public.korisnik OWNER TO postgres;
+
+--
+-- TOC entry 2957 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: COLUMN korisnik.korisnik_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.korisnik.korisnik_id IS 'Primarni kljuc tablice "korisnik"!';
+
+
+--
+-- TOC entry 202 (class 1259 OID 16394)
+-- Name: korisnik_korisnikId_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."korisnik_korisnikId_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."korisnik_korisnikId_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2958 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: korisnik_korisnikId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."korisnik_korisnikId_seq" OWNED BY public.korisnik.korisnik_id;
+
+
+--
+-- TOC entry 207 (class 1259 OID 16469)
+-- Name: model; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.model (
+    model_id integer NOT NULL,
+    naziv character(45),
+    id_kategorija integer
+);
+
+
+ALTER TABLE public.model OWNER TO postgres;
+
+--
+-- TOC entry 2959 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: TABLE model; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.model IS 'Model marke automobila';
+
+
+--
+-- TOC entry 206 (class 1259 OID 16467)
+-- Name: model_model_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.model_model_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.model_model_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2960 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: model_model_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.model_model_id_seq OWNED BY public.model.model_id;
+
+
+--
+-- TOC entry 225 (class 1259 OID 16928)
+-- Name: osvrt; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.osvrt (
+    osvrt_id integer NOT NULL,
+    id_proizvod integer,
+    id_korisnik integer,
+    ocjena integer
+);
+
+
+ALTER TABLE public.osvrt OWNER TO postgres;
+
+--
+-- TOC entry 224 (class 1259 OID 16926)
+-- Name: osvrt_osvrt_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.osvrt_osvrt_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.osvrt_osvrt_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2961 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: osvrt_osvrt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.osvrt_osvrt_id_seq OWNED BY public.osvrt.osvrt_id;
+
+
+--
+-- TOC entry 215 (class 1259 OID 16594)
+-- Name: placanje; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.placanje (
+    placanje_id integer NOT NULL,
+    naziv character(45)
+);
+
+
+ALTER TABLE public.placanje OWNER TO postgres;
+
+--
+-- TOC entry 214 (class 1259 OID 16592)
+-- Name: placanje_placanje_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.placanje_placanje_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.placanje_placanje_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2962 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: placanje_placanje_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.placanje_placanje_id_seq OWNED BY public.placanje.placanje_id;
+
+
+--
+-- TOC entry 209 (class 1259 OID 16506)
+-- Name: proizvodi; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.proizvodi (
+    proizvod_id integer NOT NULL,
+    cijena numeric,
+    opis text,
+    vrsta_motora character(45),
+    slikanaziv character(45),
+    kilometri numeric,
+    id_model integer,
+    id_akcija integer
+);
+
+
+ALTER TABLE public.proizvodi OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 16504)
+-- Name: proizvodi_proizvod_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.proizvodi_proizvod_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.proizvodi_proizvod_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2963 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: proizvodi_proizvod_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.proizvodi_proizvod_id_seq OWNED BY public.proizvodi.proizvod_id;
+
+
+--
+-- TOC entry 217 (class 1259 OID 16602)
+-- Name: racun; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.racun (
+    racun_id integer NOT NULL,
+    id_proizvod integer,
+    id_korisnik integer,
+    id_placanje integer,
+    cijena numeric,
+    pdv integer DEFAULT 25,
+    ukupna_cijena numeric,
+    placeno boolean,
+    isporuceno boolean,
+    placanje_potvrdjeno boolean
+);
+
+
+ALTER TABLE public.racun OWNER TO postgres;
+
+--
+-- TOC entry 216 (class 1259 OID 16600)
+-- Name: racun_racun_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.racun_racun_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.racun_racun_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2964 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: racun_racun_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.racun_racun_id_seq OWNED BY public.racun.racun_id;
+
+
+--
+-- TOC entry 221 (class 1259 OID 16902)
+-- Name: radnja; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.radnja (
+    radnja_id integer NOT NULL,
+    naziv character(45) NOT NULL
+);
+
+
+ALTER TABLE public.radnja OWNER TO postgres;
+
+--
+-- TOC entry 220 (class 1259 OID 16900)
+-- Name: radnja_radnja_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.radnja_radnja_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.radnja_radnja_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2965 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: radnja_radnja_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.radnja_radnja_id_seq OWNED BY public.radnja.radnja_id;
+
+
+--
+-- TOC entry 219 (class 1259 OID 16615)
+-- Name: uloga; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.uloga (
+    uloga_id integer NOT NULL,
+    naziv character(45) NOT NULL
+);
+
+
+ALTER TABLE public.uloga OWNER TO postgres;
+
+--
+-- TOC entry 218 (class 1259 OID 16613)
+-- Name: uloga_uloga_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.uloga_uloga_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.uloga_uloga_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2966 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: uloga_uloga_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.uloga_uloga_id_seq OWNED BY public.uloga.uloga_id;
+
+
+--
+-- TOC entry 227 (class 1259 OID 16951)
+-- Name: upit; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.upit (
+    upit_id integer NOT NULL,
+    naslov character(45),
+    upit text,
+    id_korisnik integer
+);
+
+
+ALTER TABLE public.upit OWNER TO postgres;
+
+--
+-- TOC entry 226 (class 1259 OID 16949)
+-- Name: upit_upit_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.upit_upit_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.upit_upit_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2967 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: upit_upit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.upit_upit_id_seq OWNED BY public.upit.upit_id;
+
+
+--
+-- TOC entry 2772 (class 2604 OID 16584)
+-- Name: akcija akcija_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.akcija ALTER COLUMN akcija_id SET DEFAULT nextval('public.akcija_akcija_id_seq'::regclass);
+
+
+--
+-- TOC entry 2778 (class 2604 OID 16913)
+-- Name: dnevnik dnevnik_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.dnevnik ALTER COLUMN dnevnik_id SET DEFAULT nextval('public.dnevnik_dnevnik_id_seq'::regclass);
+
+
+--
+-- TOC entry 2771 (class 2604 OID 16549)
+-- Name: kategorija kategorija_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.kategorija ALTER COLUMN kategorija_id SET DEFAULT nextval('public.kategorija_kategorija_id_seq'::regclass);
+
+
+--
+-- TOC entry 2766 (class 2604 OID 16399)
+-- Name: korisnik korisnik_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.korisnik ALTER COLUMN korisnik_id SET DEFAULT nextval('public."korisnik_korisnikId_seq"'::regclass);
+
+
+--
+-- TOC entry 2769 (class 2604 OID 16472)
+-- Name: model model_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.model ALTER COLUMN model_id SET DEFAULT nextval('public.model_model_id_seq'::regclass);
+
+
+--
+-- TOC entry 2768 (class 2604 OID 16407)
+-- Name: naslovnaslika id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.naslovnaslika ALTER COLUMN id SET DEFAULT nextval('public."Naslovna slika_id_seq"'::regclass);
+
+
+--
+-- TOC entry 2780 (class 2604 OID 16931)
+-- Name: osvrt osvrt_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.osvrt ALTER COLUMN osvrt_id SET DEFAULT nextval('public.osvrt_osvrt_id_seq'::regclass);
+
+
+--
+-- TOC entry 2773 (class 2604 OID 16597)
+-- Name: placanje placanje_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.placanje ALTER COLUMN placanje_id SET DEFAULT nextval('public.placanje_placanje_id_seq'::regclass);
+
+
+--
+-- TOC entry 2770 (class 2604 OID 16509)
+-- Name: proizvodi proizvod_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.proizvodi ALTER COLUMN proizvod_id SET DEFAULT nextval('public.proizvodi_proizvod_id_seq'::regclass);
+
+
+--
+-- TOC entry 2774 (class 2604 OID 16605)
+-- Name: racun racun_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.racun ALTER COLUMN racun_id SET DEFAULT nextval('public.racun_racun_id_seq'::regclass);
+
+
+--
+-- TOC entry 2777 (class 2604 OID 16905)
+-- Name: radnja radnja_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.radnja ALTER COLUMN radnja_id SET DEFAULT nextval('public.radnja_radnja_id_seq'::regclass);
+
+
+--
+-- TOC entry 2776 (class 2604 OID 16618)
+-- Name: uloga uloga_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.uloga ALTER COLUMN uloga_id SET DEFAULT nextval('public.uloga_uloga_id_seq'::regclass);
+
+
+--
+-- TOC entry 2781 (class 2604 OID 16954)
+-- Name: upit upit_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.upit ALTER COLUMN upit_id SET DEFAULT nextval('public.upit_upit_id_seq'::regclass);
+
+
+--
+-- TOC entry 2785 (class 2606 OID 16409)
+-- Name: naslovnaslika Naslovna slika_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.naslovnaslika
+    ADD CONSTRAINT "Naslovna slika_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2793 (class 2606 OID 16586)
+-- Name: akcija akcija_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.akcija
+    ADD CONSTRAINT akcija_pkey PRIMARY KEY (akcija_id);
+
+
+--
+-- TOC entry 2803 (class 2606 OID 16915)
+-- Name: dnevnik dnevnik_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.dnevnik
+    ADD CONSTRAINT dnevnik_pkey PRIMARY KEY (dnevnik_id);
+
+
+--
+-- TOC entry 2791 (class 2606 OID 16551)
+-- Name: kategorija kategorija_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.kategorija
+    ADD CONSTRAINT kategorija_pkey PRIMARY KEY (kategorija_id);
+
+
+--
+-- TOC entry 2783 (class 2606 OID 16401)
+-- Name: korisnik korisnik_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.korisnik
+    ADD CONSTRAINT korisnik_pkey PRIMARY KEY (korisnik_id);
+
+
+--
+-- TOC entry 2787 (class 2606 OID 16474)
+-- Name: model model_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.model
+    ADD CONSTRAINT model_pkey PRIMARY KEY (model_id);
+
+
+--
+-- TOC entry 2805 (class 2606 OID 16933)
+-- Name: osvrt osvrt_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.osvrt
+    ADD CONSTRAINT osvrt_pkey PRIMARY KEY (osvrt_id);
+
+
+--
+-- TOC entry 2795 (class 2606 OID 16599)
+-- Name: placanje placanje_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.placanje
+    ADD CONSTRAINT placanje_pkey PRIMARY KEY (placanje_id);
+
+
+--
+-- TOC entry 2789 (class 2606 OID 16514)
+-- Name: proizvodi proizvodi_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.proizvodi
+    ADD CONSTRAINT proizvodi_pkey PRIMARY KEY (proizvod_id);
+
+
+--
+-- TOC entry 2797 (class 2606 OID 16611)
+-- Name: racun racun_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.racun
+    ADD CONSTRAINT racun_pkey PRIMARY KEY (racun_id);
+
+
+--
+-- TOC entry 2801 (class 2606 OID 16907)
+-- Name: radnja radnja_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.radnja
+    ADD CONSTRAINT radnja_pkey PRIMARY KEY (radnja_id);
+
+
+--
+-- TOC entry 2799 (class 2606 OID 16620)
+-- Name: uloga uloga_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.uloga
+    ADD CONSTRAINT uloga_pkey PRIMARY KEY (uloga_id);
+
+
+--
+-- TOC entry 2807 (class 2606 OID 16959)
+-- Name: upit upit_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.upit
+    ADD CONSTRAINT upit_pkey PRIMARY KEY (upit_id);
+
+
+--
+-- TOC entry 2811 (class 2606 OID 16587)
+-- Name: proizvodi akcijaFK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.proizvodi
+    ADD CONSTRAINT "akcijaFK" FOREIGN KEY (id_akcija) REFERENCES public.akcija(akcija_id);
+
+
+--
+-- TOC entry 2816 (class 2606 OID 16921)
+-- Name: dnevnik dnevnik_korisnik_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.dnevnik
+    ADD CONSTRAINT dnevnik_korisnik_id_fkey FOREIGN KEY (id_korisnik) REFERENCES public.korisnik(korisnik_id);
+
+
+--
+-- TOC entry 2815 (class 2606 OID 16916)
+-- Name: dnevnik dnevnik_radnja_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.dnevnik
+    ADD CONSTRAINT dnevnik_radnja_id_fkey FOREIGN KEY (id_radnja) REFERENCES public.radnja(radnja_id);
+
+
+--
+-- TOC entry 2809 (class 2606 OID 16556)
+-- Name: model kategorijaFK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.model
+    ADD CONSTRAINT "kategorijaFK" FOREIGN KEY (id_kategorija) REFERENCES public.kategorija(kategorija_id);
+
+
+--
+-- TOC entry 2813 (class 2606 OID 16632)
+-- Name: racun korisnikFK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.racun
+    ADD CONSTRAINT "korisnikFK" FOREIGN KEY (id_korisnik) REFERENCES public.korisnik(korisnik_id);
+
+
+--
+-- TOC entry 2810 (class 2606 OID 16515)
+-- Name: proizvodi modelFK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.proizvodi
+    ADD CONSTRAINT "modelFK" FOREIGN KEY (id_model) REFERENCES public.model(model_id);
+
+
+--
+-- TOC entry 2818 (class 2606 OID 16939)
+-- Name: osvrt osvrt_id_korisnik_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.osvrt
+    ADD CONSTRAINT osvrt_id_korisnik_fkey FOREIGN KEY (id_korisnik) REFERENCES public.korisnik(korisnik_id);
+
+
+--
+-- TOC entry 2817 (class 2606 OID 16934)
+-- Name: osvrt osvrt_id_proizvod_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.osvrt
+    ADD CONSTRAINT osvrt_id_proizvod_fkey FOREIGN KEY (id_proizvod) REFERENCES public.proizvodi(proizvod_id);
+
+
+--
+-- TOC entry 2814 (class 2606 OID 16637)
+-- Name: racun placanjeFK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.racun
+    ADD CONSTRAINT "placanjeFK" FOREIGN KEY (id_placanje) REFERENCES public.placanje(placanje_id);
+
+
+--
+-- TOC entry 2812 (class 2606 OID 16627)
+-- Name: racun proizvodFK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.racun
+    ADD CONSTRAINT "proizvodFK" FOREIGN KEY (id_proizvod) REFERENCES public.proizvodi(proizvod_id);
+
+
+--
+-- TOC entry 2808 (class 2606 OID 16622)
+-- Name: korisnik ulogaFK; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.korisnik
+    ADD CONSTRAINT "ulogaFK" FOREIGN KEY (id_uloga) REFERENCES public.uloga(uloga_id);
+
+
+--
+-- TOC entry 2819 (class 2606 OID 16960)
+-- Name: upit upit_id_korisnik_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.upit
+    ADD CONSTRAINT upit_id_korisnik_fkey FOREIGN KEY (id_korisnik) REFERENCES public.korisnik(korisnik_id);
+
+
+-- Completed on 2020-09-17 17:17:22
+
+--
+-- PostgreSQL database dump complete
+--
+
