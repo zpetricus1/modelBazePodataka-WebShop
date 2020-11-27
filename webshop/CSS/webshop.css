@@ -1,0 +1,306 @@
+.prviRed { grid-area: prviRed; }
+/*.drugiRed { grid-area: drugiRed; }*/
+.bodyContentLimuzine div:nth-child(even){
+    background-color: #ebebe0;
+}
+.bodyContentLimuzine div:nth-child(odd){
+    background-color: #e1e1d0;
+}
+
+.bodyContentLimuzine{
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Sen';
+  color: white;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  background-color: none;
+  grid-template-areas:
+    'prviRed prviRed';
+  grid-gap: 10px;
+  padding: 0px 0px;
+
+}
+
+
+/*GRID HEADER*/
+.header {
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Sen';
+  color: white;
+  display: grid;
+  grid-template-columns: 850px 335px 315px;
+  grid-template-rows:  315px;
+  grid-template-areas:
+    'headerSlika logoPretraga prijava';
+  grid-gap: 10px;
+  padding: 0px 0px;
+  background: #9B2335;
+}
+
+.logoSlika{
+width:300px;
+}
+.headerSlika { grid-area: headerSlika; }
+.prijava { grid-area: prijava; }
+.logoPretraga { grid-area: logoPretraga; }
+
+.naslovnaSlika{
+  width: 850px;
+  height:315px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+  overflow: auto;
+
+}
+.prijava{
+  background-color: #333;
+}
+
+/*NAVIGACIJA*/
+
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family:'Sen';
+}
+
+.topnav a:hover {
+  background-color: #FF6F61;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #FF6F61;
+  color: white;
+}
+
+/*BODY*/
+
+body{
+  background-color: #DFCFBE;
+  font-family: 'Sen';
+}
+.bodySidebarOne { grid-area: bodySidebarOne; }
+.bodyContent { grid-area: bodyContent; }
+.bodySidebarTwo { grid-area: bodySidebarTwo; }
+
+.body {
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Sen';
+  color: white;
+  display: grid;
+  grid-template-columns: 315px 870px 315px;
+
+  grid-template-areas:
+    'bodySidebarOne bodyContent bodySidebarTwo';
+  grid-gap: 10px;
+  padding: 0px 0px;
+
+}
+.bodySidebarOne{
+  background-color: #333;
+}
+.bodyContent{
+  background-color:#DCDCDC;
+}
+.bodySidebarTwo{
+  background-color: #9B2335;
+}
+
+
+
+/*FOOTER*/
+
+
+.footer{
+  padding: 60px;
+  text-align: auto;
+  background: #333;
+  color: white;
+  font-size: 12px;
+  font-family: 'Sen';
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+/*GRID FOOTER*/
+
+.socialMedia { grid-area: socialMedia; }
+.keepMePosted { grid-area: keepMePosted; }
+.miniGalerija { grid-area: miniGalerija; }
+.footer {
+  display: grid;
+  grid-template-columns: 33% 33% 33% ;
+  grid-template-areas:
+    'socialMedia keepMePosted miniGalerija';
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+  overflow: auto;
+}
+
+/*SIDEBAR FOOTER*/
+.socialMedia{
+  display: none;
+}
+.keepMePosted{
+  display: none;
+}
+.miniGalerija{
+  display: none;
+}
+.footer:hover div{
+  display: table-cell;
+}
+
+
+/*BUTTON*/
+
+.buttonEmail {
+  background-color: #FF6F61;
+  border: none;
+  color: white;
+  padding: 12px 54px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 2px;
+  cursor: pointer;
+}
+.buttonPrijava {
+  background-color: #FF6F61;
+  border: none;
+  color: white;
+  padding: 12px 80px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 2px;
+  cursor: pointer;
+}
+.buttonKosarica {
+  background-color: #9B2335;;
+  border: none;
+  color: white;
+  padding: auto auto;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 2px;
+  cursor: pointer;
+}
+
+.buttonVidiVise {
+  background-color: #333;
+  border: none;
+  color: white;
+  padding: auto auto;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 2px;
+  cursor: pointer;
+}
+input[type=text] {
+  width: auto;
+  padding: 12px 32px;
+  margin: 8px 2px;
+}
+input[type=number] {
+  width: auto;
+  padding: 12px 32px;
+  margin: 8px 2px;
+}
+input[type=select] {
+  width: auto;
+  padding: 12px 32px;
+  margin: 8px 2px;
+}
+input[type=password] {
+  width: auto;
+  padding: 12px 32px;
+  margin: 8px 2px;
+}
+input[type=select] {
+  width: auto;
+  padding: 12px 32px;
+  margin: 8px 2px;
+}
+
+h3 {
+  color: #FF6F61;
+  opacity: 0.7;
+}
+h2 {
+  color: #FF6F61;
+}
+p{
+  color:silver;
+  opacity: 0.7;
+}
+
+/*SOCIAL MEDIA*/
+
+ .socialMedia{
+   text-align: center;
+ }
+ .keepMePosted{
+   text-align: center;
+ }
+
+.socialMedia img{
+  width: 50px;
+  opacity: 0.6;
+}
+.socialMedia img:hover{
+  opacity: 1;
+}
+.miniGalerija{
+  text-align: center;
+
+}
+.miniGalerija img{
+  width: 50px;
+}
+a{
+  color:white;
+  font-family: 'Sen';
+}
+#SideBar{
+  color:white;
+  background-color: #FF6F61;
+}
+label{
+  color:black;
+}
+.podaci{
+  color:#333;
+  font-size: 14px;
+}
